@@ -1,10 +1,20 @@
-def the_winner_of_the_game(size_of_sequence):
-    first_player_count = 0
-    second_player_count = 0
+def entering_sequence_numbers():
     is_numbers_correct = 0
+    is_size_correct = False
+    size_of_sequence = 0
     sequence_of_numbers = []
 
-    # Check entering correct
+    # Check entering size correct
+    while not is_size_correct:
+        size_of_sequence = input("Enter size of sequence: ")
+        if int(size_of_sequence) > 0:
+            is_size_correct = True
+        else:
+            print('You must enter a valid size (size > 0): ')
+
+        size_of_sequence = int(size_of_sequence)
+
+    # Check entering sequence correct
     while is_numbers_correct == 0:
         sequence_of_numbers = \
             list(map(int,
@@ -23,53 +33,54 @@ def the_winner_of_the_game(size_of_sequence):
                 print("Numbers must be < 1000 and > 0")
             break
 
-    print(sequence_of_numbers)
+    return sequence_of_numbers
+
+
+def get_index_max_elem(sequence_of_numbers, i, j):
+    max_in_sequence = max(sequence_of_numbers[i], sequence_of_numbers[j])
+    selection_index = 0
+
+    if sequence_of_numbers[j] == max_in_sequence:
+        selection_index = j
+
+    if sequence_of_numbers[i] == max_in_sequence:
+        selection_index = i
+    return selection_index
+
+
+def the_winner_of_the_game():
+    first_player_count = 0
+    second_player_count = 0
+    sequence_of_numbers = entering_sequence_numbers()
+
     while len(sequence_of_numbers) != 0:
+
         # First player
         if len(sequence_of_numbers) == 1:
             first_player_count += sequence_of_numbers[0]
             break
         i = 0
         j = len(sequence_of_numbers) - i - 1
-        max_in_sequence = max(sequence_of_numbers[i], sequence_of_numbers[j])
-        selection_index = 0
-
-        if sequence_of_numbers[j] == max_in_sequence:
-            selection_index = j
-
-        if sequence_of_numbers[i] == max_in_sequence:
-            selection_index = i
-
-        first_player_count += max_in_sequence
-        del sequence_of_numbers[selection_index]
+        max_index = get_index_max_elem(sequence_of_numbers, i, j)
+        first_player_count += sequence_of_numbers[max_index]
+        del sequence_of_numbers[max_index]
 
         # Second player
         if len(sequence_of_numbers) == 1:
             second_player_count += sequence_of_numbers[0]
             break
-
         j = len(sequence_of_numbers) - i - 1
-        max_in_sequence = max(sequence_of_numbers[i], sequence_of_numbers[j])
-        selection_index = 0
+        max_index = get_index_max_elem(sequence_of_numbers, i, j)
+        second_player_count += sequence_of_numbers[max_index]
+        del sequence_of_numbers[max_index]
 
-        if sequence_of_numbers[j] == max_in_sequence:
-            selection_index = j
-
-        if sequence_of_numbers[i] == max_in_sequence:
-            selection_index = i
-
-        second_player_count += max_in_sequence
-        del sequence_of_numbers[selection_index]
-
-    print("First Player points:" + str(first_player_count))
-    print("Second Player points:" + str(second_player_count))
     if first_player_count > second_player_count:
-        print(1)
+        return 1
     elif first_player_count < second_player_count:
-        print(2)
+        return 2
     else:
-        print(0)
+        return 0
 
 
 if __name__ == '__main__':
-    the_winner_of_the_game(5)
+    print(the_winner_of_the_game())
