@@ -49,13 +49,19 @@ def entering_sequence_numbers():
 
 
 def get_index_max_elem(sequence_of_numbers, i, j):
-    max_in_sequence = max(sequence_of_numbers[i], sequence_of_numbers[j])
-    selection_index = 0
-
-    if sequence_of_numbers[j] == max_in_sequence:
-        selection_index = j
+    if len(sequence_of_numbers) > 3:
+        first_max_in_sequence = max(sequence_of_numbers[i] + sequence_of_numbers[i + 2],
+                                    sequence_of_numbers[j] + sequence_of_numbers[j - 2])
+        second_max_in_sequence = max(sequence_of_numbers[i + 1] + sequence_of_numbers[i + 1],
+                                     sequence_of_numbers[j] + sequence_of_numbers[j - 3])
     else:
+        first_max_in_sequence = sequence_of_numbers[i]
+        second_max_in_sequence = sequence_of_numbers[j]
+    if first_max_in_sequence > second_max_in_sequence:
         selection_index = i
+    else:
+        selection_index = j
+
     return selection_index
 
 
