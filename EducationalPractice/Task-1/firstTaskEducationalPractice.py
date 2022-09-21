@@ -1,37 +1,49 @@
-def entering_sequence_numbers():
-    is_numbers_correct = 0
+def entering_size():
     is_size_correct = False
     size_of_sequence = 0
-    sequence_of_numbers = []
-
     # Check entering size correct
     while not is_size_correct:
-        size_of_sequence = input("Enter size of sequence: ")
-        if int(size_of_sequence) > 0:
-            is_size_correct = True
-        else:
-            print('You must enter a valid size (size > 0): ')
+        try:
+            size_of_sequence = int(input("Enter size of array: "))
+            if size_of_sequence > 0:
+                is_size_correct = True
+        except ValueError:
+            print('You must enter a valid integer size (size > 0): ')
+    return size_of_sequence
 
-        size_of_sequence = int(size_of_sequence)
 
-    # Check entering sequence correct
-    while is_numbers_correct == 0:
-        sequence_of_numbers = \
-            list(map(int,
-                     input("Enter " + str(size_of_sequence) + " elements: ")
-                     .strip().split()))[:size_of_sequence]
-        if len(sequence_of_numbers) != size_of_sequence:
-            is_numbers_correct = 0
-            print("Incorrect size of sequence")
+def check_is_sequence_correct(sequence_of_numbers, size_of_sequence, first_range, second_range):
+    is_numbers_correct = False
+
+    if len(sequence_of_numbers) != size_of_sequence:
+        is_numbers_correct = False
+        print("Incorrect size of sequence")
+
+    for element in sequence_of_numbers:
+        if first_range < element < second_range:
+            is_numbers_correct = True
             continue
-        for element in sequence_of_numbers:
-            if 0 < element < 1000:
-                is_numbers_correct = 1
-                continue
-            else:
-                is_numbers_correct = 0
-                print("Numbers must be < 1000 and > 0")
-            break
+        else:
+            is_numbers_correct = False
+            print("Numbers must be < 1000 and > 0")
+        break
+    return is_numbers_correct
+
+
+def entering_sequence_numbers():
+    size_of_sequence = entering_size()
+    sequence_of_numbers = []
+    check_entering_sequence_correct = False
+
+    while not check_entering_sequence_correct:
+        try:
+            sequence_of_numbers = \
+                list(map(int,
+                         input("Enter " + str(size_of_sequence) + " elements: ")
+                         .strip().split()))[:size_of_sequence]
+            check_entering_sequence_correct = check_is_sequence_correct(sequence_of_numbers, size_of_sequence, 0, 1000)
+        except ValueError:
+            print("Element must be number")
 
     return sequence_of_numbers
 
@@ -42,8 +54,7 @@ def get_index_max_elem(sequence_of_numbers, i, j):
 
     if sequence_of_numbers[j] == max_in_sequence:
         selection_index = j
-
-    if sequence_of_numbers[i] == max_in_sequence:
+    else:
         selection_index = i
     return selection_index
 
