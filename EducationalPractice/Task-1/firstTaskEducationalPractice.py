@@ -65,10 +65,9 @@ def get_index_max_elem(sequence_of_numbers, i, j):
     return selection_index
 
 
-def the_winner_of_the_game():
+def the_winner_of_the_game(sequence_of_numbers):
     first_player_count = 0
     second_player_count = 0
-    sequence_of_numbers = entering_sequence_numbers()
 
     while len(sequence_of_numbers) != 0:
 
@@ -100,4 +99,5 @@ def the_winner_of_the_game():
 
 
 if __name__ == '__main__':
-    print(the_winner_of_the_game())
+    sequence_of_numbers = entering_sequence_numbers()
+    print(the_winner_of_the_game(sequence_of_numbers))
