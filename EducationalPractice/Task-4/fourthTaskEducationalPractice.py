@@ -37,7 +37,7 @@ def additional_menu(linked_list):
             linked_list.entering_list()
         if number == str(3):
             linked_list.delete_all_list()
-            linked_list.generate_list_with_generator(5)
+            linked_list.generate_list_with_generator(linked_list.size)
         if number == str(4):
             print(linked_list)
         if number == str(5):
