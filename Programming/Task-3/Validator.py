@@ -1,3 +1,6 @@
+from os.path import exists
+
+
 class Validator:
 
     @staticmethod
@@ -41,31 +44,28 @@ class Validator:
             return True
         is_time_correct = False
         is_24_hour = False
-        splitted_time = time.split(':')
-        if 2 < len(splitted_time) < 2:
+        split_time = time.split(':')
+        if len(split_time) != 2 or len(split_time[0]) != 2 or len(split_time[0]) != 2:
             print('Time must be XX:XX ')
             return False
         try:
-            for i in range(0, len(splitted_time)):
-                if len(splitted_time[i]) < 2 or len(splitted_time[i]) > 2:
-                    print('Time must be XX:XX ')
-                    return False
-                if i == 0 and int(splitted_time[i]) == 24:
+            for i in range(0, len(split_time)):
+                if i == 0 and int(split_time[i]) == 24:
                     is_24_hour = True
                 if is_24_hour:
-                    if i == 1 and splitted_time[i] != "00":
+                    if i == 1 and split_time[i] != "00":
                         print("Time incorrect")
                         return False
-                if i == 0 and int(splitted_time[i]) > 23:
+                if i == 0 and int(split_time[i]) > 23:
                     print("Time cannot be biggest than 23:59")
                     return False
-                if i == 1 and int(splitted_time[i]) > 59:
+                if i == 1 and int(split_time[i]) > 59:
                     print("Time cannot be biggest than 23:59")
                     return False
-                if int(splitted_time[i]) < 0:
+                if int(split_time[i]) < 0:
                     print("Time must be natural! ")
                     is_time_correct = False
-                if int(splitted_time[i]) and int(splitted_time[i]) >= 0:
+                if int(split_time[i]) and int(split_time[i]) >= 0:
                     is_time_correct = True
         except ValueError:
             print('Time must be integer! ')
@@ -74,14 +74,14 @@ class Validator:
     @staticmethod
     def is_date_correct(date):
         is_date_correct = False
-        splitted_date = date.split('/')
-        if len(splitted_date) < 3:
+        split_date = date.split('/')
+        if len(split_date) < 3:
             is_date_correct = False
             print('Date must be XX/XX/XX ')
             return False
         try:
-            for i in range(0, len(splitted_date)):
-                if len(splitted_date[i]) != 2:
+            for i in range(0, len(split_date)):
+                if len(split_date[i]) != 2:
                     if i == 0:
                         print('Day must contain 2 digit')
                         return False
@@ -91,21 +91,27 @@ class Validator:
                     if i == 2:
                         print('Year must contain 2 digit')
                         return False
-                if i == 0 and int(splitted_date[i]) > 31:
+                if i == 0 and int(split_date[i]) > 31:
                     print('Day must be lower than 31')
                     return False
-                if i == 1 and int(splitted_date[i]) > 12:
+                if i == 1 and int(split_date[i]) > 12:
                     print('Month must be lower than 12')
                     return False
-                if i == 2 and int(splitted_date[i]) < 22:
+                if i == 2 and int(split_date[i]) < 22:
                     print('Year must be biggest than 22')
                     return False
-                if int(splitted_date[i]) <= 0:
+                if int(split_date[i]) <= 0:
                     print("Time must be natural! ")
                     is_date_correct = False
-                if int(splitted_date[i]) and int(splitted_date[i]) >= 0:
+                if int(split_date[i]) and int(split_date[i]) >= 0:
                     is_date_correct = True
         except ValueError:
             print('Time must be integer! ')
         return is_date_correct
 
+    @staticmethod
+    def validate_file_name(file_name):
+        while not exists(file_name):
+            file_name = input("Enter file name: ")
+
+        return file_name

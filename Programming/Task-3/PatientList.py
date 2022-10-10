@@ -1,10 +1,11 @@
 from operator import attrgetter
 from Patient import Patient
 import json
+from PatientService import PatientService
+from Validator import Validator
 
 
 class PatientList:
-
     def __init__(self, patient_list=None):
         self.patient_list = []
         if patient_list is not None:
@@ -17,38 +18,55 @@ class PatientList:
             output += "\n"
         return output
 
-    def add_patient(self, other: Patient):
-        path = input("Enter name file: ")
-        if other.isValid():
-            self.patient_list.append(other)
-            self.save(path)
-            self.upload(path)
+    def __len__(self):
+        return len(self.patient_list)
 
-    def remove_patient(self, other_id):
-        path = input("Enter name file: ")
+    def __getitem__(self, index):
+        return self.patient_list[index]
+
+    def __setitem__(self, key, value):
+        self.patient_list[key] = value
+
+    def add_patient(self, patient):
+        if not PatientService.isValid(patient):
+            self.patient_list.append(patient)
+
+    def remove_patient_from_list(self, other_id):
         element = None
         for x in self.patient_list:
-            if x.patient_id == other_id:
+            if str(x.patient_id) == other_id:
                 element = x
                 break
         if element is not None:
             self.patient_list.remove(element)
-        self.save(path)
 
-    def edit_patient(self, other_id, other: Patient):
-        other.isValid()
-        path = input("Enter name file: ")
-        element = None
+    def remove_patient_from_file(self, other_id):
+        name = input("Enter path to upload: ")
+        file_name = Validator.validate_file_name(name)
+        name_list = input("Enter name of patient list: ")
+        PatientList.upload(self, file_name, name_list)
+        PatientList.remove_patient_from_list(self, other_id)
+        name = input("Enter path to save: ")
+        file_name = Validator.validate_file_name(name)
+        PatientList.save(self, file_name)
+
+    def edit_patient_in_list(self, other_id):
         element_id = 0
         for x in self.patient_list:
-            if x.patient_id == other_id:
-                element = x
+            if str(x.patient_id) == other_id:
+                print("Patient to edit: ")
+                print(x)
+                x = PatientService.input_patient_from_keyboard(x)
+                x.patient_id = int(other_id)
                 break
             element_id += 1
-        other.patient_id = other_id
-        if element is not None:
-            self.patient_list[element_id] = other
-        self.save(path)
+
+    def edit_patient_in_file(self, other_id):
+        name = input("Enter path to upload: ")
+        file_name = Validator.validate_file_name(name)
+        name_list = input("Enter name of patient list: ")
+        PatientList.upload(self, file_name, name_list)
+        PatientList.edit_patient_in_list(self, other_id)
 
     def search(self, element_to_find):
         finded_elements = []
@@ -70,13 +88,20 @@ class PatientList:
         with open(path, "w") as file:
             json.dump(dt, file, cls=PatientEncoder)
 
-    def upload(self, path=None):
-        def read_json(_path):
-            with open(_path, "r") as file:
-                return json.load(file)
-
-        data = read_json(path)
-        return PatientList(**data)
+    def upload(self, file_name, name_list):
+        with open(file_name) as json_file:
+            data = json.load(json_file)
+            for i in data[name_list]:
+                patient = Patient()
+                patient.patient_id = i['patient_id']
+                patient.name = i['name']
+                patient.date = i['date']
+                patient.time = i['time']
+                patient.duration_in_minutes = i['duration_in_minutes']
+                patient.doctor_name = i['doctor_name']
+                patient.department = i['department']
+                patient = PatientService.valid_patient(patient)
+                PatientList.add_patient(self, patient)
 
 
 class PatientEncoder(json.JSONEncoder):
