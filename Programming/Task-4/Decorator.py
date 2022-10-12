@@ -181,3 +181,13 @@ class Decorator:
     @decorator_date
     def enter_date(date):
         return date
+
+    @staticmethod
+    def validateFileName():
+        def validateFileNameDecorator(func):
+            def validateFileNameWrapper(L, filename):
+                if not filename:
+                    raise ValueError("Incorrect filename.")
+                return func(L, filename)
+            return validateFileNameWrapper
+        return validateFileNameDecorator

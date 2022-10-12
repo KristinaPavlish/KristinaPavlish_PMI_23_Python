@@ -7,7 +7,7 @@ from Validate import Validate
 def menu(patient_list):
     while 1 == 1:
         print("MENU:")
-        print("\n************************************")
+        print("************************************")
         print("[1] - Add patient + ")
         print("[2] - Save list + ")
         print("[3] - Upload list+")
@@ -33,10 +33,10 @@ def menu(patient_list):
             PatientList.save(patient_list, file_name)
             print(patient_list)
         if number == str(3):
-            name = input("Enter path: ")
-            file_name = Validate.validate_file_name(name)
-            name_list = input("Enter name of patient list: ")
-            PatientList.upload(patient_list, file_name, name_list)
+            path = input("Enter path: ")
+            path = Validate.validate_file_name(path)
+            name_list = input("Input name list: ")
+            patient_list.read_json_file(path, name_list)
         if number == str(4):
             for i in range(0, len(patient_list)):
                 print(patient_list[i])
@@ -51,15 +51,23 @@ def menu(patient_list):
             id = Decorator.enter_natural(id)
             patient_list.edit_patient_in_list(id)
         if number == str(7):
+            path_to_upload = input("Enter path to upload: ")
+            path_to_upload = Validate.validate_file_name(path_to_upload)
+            name_list = input("Enter name of patient list: ")
+            path_to_save = input("Enter path to save: ")
+            path_to_save = Validate.validate_file_name(path_to_save)
             id = input("Enter id to delete: ")
             id = Decorator.enter_natural(id)
-            patient_list.remove_patient_from_file(id)
+            patient_list.remove_patient_from_file(id, path_to_upload, path_to_save, name_list)
             for i in range(0, len(patient_list)):
                 print(patient_list[i])
         if number == str(8):
+            path = input("Enter path to upload: ")
+            path = Validate.validate_file_name(path)
+            name_list = input("Enter name of patient list: ")
             id = input("Enter id to edit: ")
             id = Decorator.enter_natural(id)
-            patient_list.edit_patient_in_file(id)
+            patient_list.edit_patient_in_file(id, path, name_list)
         if number == str(9):
             print("Fields to sort: <patient_id> <name> <date> <time> <duration_in_minutes> <doctor_name> <department>")
             patient_list.sort()

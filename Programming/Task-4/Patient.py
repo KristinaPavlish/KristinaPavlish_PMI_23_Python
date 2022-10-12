@@ -1,3 +1,4 @@
+from Decorator import Decorator
 class Patient:
 
     def __init__(self, patient_id=None, name=None, date=None, time=None, duration_in_minutes=None, doctor_name=None,
@@ -33,3 +34,31 @@ class Patient:
             self.doctor_name,
             self.department
         )
+
+    @Decorator.decorator_natural
+    def patient_id(self, value):
+        self.patient_id = value
+
+    @Decorator.decorator_word
+    def name(self, value):
+        self.name = value
+
+    @Decorator.decorator_date
+    def date(self, value):
+        self.date = value
+
+    @Decorator.decorator_time
+    def time(self, value):
+        self.time = value
+
+    @Decorator.decorator_natural
+    def duration_in_minutes(self, value):
+        self.duration_in_minutes = value
+
+    @Decorator.decorator_word
+    def doctor_name(self, value):
+        self.doctor_name = value
+
+    @Decorator.decorator_word
+    def department(self, value):
+        self.department = value

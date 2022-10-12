@@ -11,7 +11,6 @@ class PatientService(Patient):
 
     @staticmethod
     def input_patient_from_keyboard(patient):
-        decorator = Decorator()
         patient.patient_id = input("Input Patient Id: ")
         patient.patient_id = Decorator.enter_natural(patient.patient_id)
 
@@ -35,31 +34,7 @@ class PatientService(Patient):
         return patient
 
     @staticmethod
-    def isValid(patient):
-        if not Validate.is_natural(patient.patient_id):
-            raise PatientIdIncorrect()
-
-        if not Validate.is_only_letter(patient.name):
-            raise NameIncorrect()
-
-        if not Validate.is_date_correct(patient.date):
-            raise DateIncorrect()
-
-        if not Validate.is_time_correct(patient.time):
-            raise TimeIncorrect()
-
-        if not Validate.is_natural(patient.duration_in_minutes):
-            raise DurationInMinuteIncorrect()
-
-        if not Validate.is_only_letter(patient.doctor_name):
-            raise DoctorNameIncorrect()
-
-        if not Validate.is_only_letter(patient.department):
-            raise DepartmentIncorrect()
-
-    @staticmethod
     def valid_patient(patient):
-        decorator = Decorator()
         patient.patient_id = Decorator.enter_date(patient.patient_id)
 
         patient.name = Decorator.enter_words(patient.name)
