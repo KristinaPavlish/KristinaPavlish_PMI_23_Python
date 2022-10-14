@@ -43,6 +43,20 @@ class Validator:
         return is_numbers_correct
 
     @staticmethod
+    def is_ranges_correct(first_range, second_range):
+        is_first_range_correct = Validator.is_natural(first_range)
+        while not is_first_range_correct:
+            first_range = input("Enter correct first range: ")
+            is_first_range_correct = Validator.is_natural(first_range)
+        first_range = int(first_range)
+        is_second_range_correct = Validator.is_natural(second_range)
+        while not is_second_range_correct:
+            second_range = input("Enter correct second range: ")
+            is_second_range_correct = Validator.is_natural(second_range)
+        second_range = int(second_range)
+        return first_range, second_range
+
+    @staticmethod
     def validate_file_name(file_name):
         while not exists(file_name):
             file_name = input("Enter file name: ")

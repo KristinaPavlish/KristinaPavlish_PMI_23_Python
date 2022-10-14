@@ -14,7 +14,6 @@ class Strategy:
             print(linked_list)
         return linked_list
 
-
 def generate_with_generator():
     size = input("Enter size: ")
     is_index_correct = Validator.is_natural(size)
@@ -24,14 +23,17 @@ def generate_with_generator():
     size = int(size)
     linked_list = LinkedList()
     linked_list.size = size
-    linked_list.generate_list_with_generator(size)
+    first_range = input("Enter first range: ")
+    second_range = input("Enter second range: ")
+    first_range, second_range = Validator.is_ranges_correct(first_range, second_range)
+    linked_list.generate_array(first_range, second_range)
     return linked_list
 
 
 def generate_with_read_from_file():
     sequence = LinkedList()
     file_name = input("Enter file name: ")
-    Validator.validate_file_name(file_name)
+    file_name = Validator.validate_file_name(file_name)
     file = open(file_name, 'r')
     content = file.read()
     file_content = content.split(",")

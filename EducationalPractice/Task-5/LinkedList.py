@@ -71,14 +71,14 @@ class LinkedList:
             is_valid = Validator.is_natural(new_str_element) and Validator.is_length_correct(new_str_element)
         if is_valid:
             new_node = Node(new_str_element)
-            if position < 1:
-                print("\nposition should be >= 1.")
-            elif position == 1:
+            if int(position) < 1:
+                print("\nPosition should be >= 1.")
+            elif int(position) == 1:
                 new_node.next = self.head
                 self.head = new_node
             else:
                 temp = self.head
-                for i in range(1, position - 1):
+                for i in range(1, int(position) - 1):
                     if temp is not None:
                         temp = temp.next
                 if temp is not None:
@@ -89,7 +89,7 @@ class LinkedList:
 
     def delete_str_element_by_position(self, position):
         node_to_delete = None
-        if position < 1:
+        if int(position) < 1:
             print("\nposition should be >= 1.")
         elif position == 1 and self.head is not None:
             node_to_delete = self.head
@@ -97,7 +97,7 @@ class LinkedList:
             node_to_delete = None
         else:
             temp = self.head
-            for i in range(1, position - 1):
+            for i in range(1, int(position) - 1):
                 if temp is not None:
                     temp = temp.next
             if temp is not None and temp.next is not None:
@@ -108,21 +108,15 @@ class LinkedList:
                 print("\nThe node is already null.")
 
     def delete_str_element_by_two_position(self, first_position, second_position):
-        if first_position < 1 or second_position < 1 or first_position == second_position or first_position > second_position:
-            print("Incorrect position ")
-        elif first_position == 0 and second_position == 1 and self.head is not None:
-            self.head = self.head.next
-        else:
-            temp = self.head
-            i = first_position
-            while i != second_position + 1:
-                if temp is not None:
-                    temp = temp.next
-                    i += 1
-            if temp is not None and temp.next is not None:
-                temp.next = temp.next.next
-            else:
-                print("\nThe node is already null.")
+        is_correct = True
+        if not (int(second_position) > self.__len__() or int(first_position) > int(
+                second_position) or Validator.is_natural(first_position) or Validator.is_natural(second_position)):
+            is_correct = False
+        while not is_correct:
+            first_position = input("Enter first position: ")
+            second_position = input("Enter second position: ")
+        for i in range(int(second_position) - int(first_position) + 1):
+            self.delete_str_element_by_position(first_position)
 
     def delete_all_list(self):
         while self.head is not None:
@@ -162,6 +156,28 @@ class LinkedList:
                 value = next(generator)
         return self
 
+    def add_elements_by_position(self, sequence, index):
+        new_list = LinkedList()
+        size = len(self)
+        if len(self) != 0:
+            is_index_correct = (Validator.is_natural(index)) and (int(index) < size + 1)
+            while not is_index_correct:
+                index = input("Enter correct index to add: ")
+                is_index_correct = (Validator.is_natural(index)) and (int(index) < size + 1)
+            for j in range(0, len(self)):
+                if j < index - 1:
+                    new_list.insert(self[j])
+                if j == index - 1:
+                    new_list.insert(self[j])
+                    for i in range(0, len(sequence)):
+                        new_list.insert(sequence[i])
+                if j > index - 1:
+                    new_list.insert(self[j])
+        else:
+            print("List was empty added in start: ")
+            for elem in sequence:
+                new_list.insert(elem)
+        return new_list
 
     @staticmethod
     def check_pattern_xyxy(str_element):
