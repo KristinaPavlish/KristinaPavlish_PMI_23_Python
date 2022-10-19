@@ -4,6 +4,7 @@ from PatientService import PatientService
 from Decorator import Decorator
 from Validate import Validate
 
+
 def menu(patient_list):
     while 1 == 1:
         print("MENU:")
@@ -24,9 +25,19 @@ def menu(patient_list):
         number = input("Enter option : ")
         if number == str(1):
             patient = Patient()
-            patient1 = PatientService.input_patient_from_keyboard(patient)
+            #patient1 = PatientService.input_patient_from_keyboard(patient)
+            #patient_list.add_patient(patient1)
+            patient1 = PatientService.input_patient("patient_id", "name", "date", "time", "duration_in_minutes", "doctor_name", "department")
+            #d = dict(patient1)
+            #print(d)
+            #print(type(d))
+            #print(patient1)
+            #print(type(Patient(**patient1)))
+           # elem = Patient(**d)
+            #print(elem)
+            patient_list.add_patient(patient1)
             print(patient1)
-            PatientList.add_patient(patient_list, patient1)
+            #patient_list.append(Patient(**patient1))
         if number == str(2):
             name = input("Enter path: ")
             file_name = Validate.validate_file_name(name)
