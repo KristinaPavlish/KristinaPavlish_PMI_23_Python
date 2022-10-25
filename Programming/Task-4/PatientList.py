@@ -2,14 +2,13 @@ import uuid
 from operator import attrgetter
 from Patient import Patient
 import json
-from PatientService import PatientService
 from Decorator import Decorator
 from Validate import Validate
+
+
 class PatientList:
-    def __init__(self, patient_list=None):
-        self.patient_list = []
-        if patient_list is not None:
-            self.patient_list = patient_list
+    def __init__(self, *patient_list):
+        self.patient_list = list(patient_list[:])
 
     def __str__(self):
         output = ""
@@ -51,7 +50,8 @@ class PatientList:
             if str(x.patient_id) == other_id:
                 print("Patient to edit: ")
                 print(x)
-                x = PatientService.input_patient_from_keyboard(x)
+                x = Patient.input_patient("patient_id", "name", "date", "time", "duration_in_minutes", "doctor_name",
+                                          "department")
                 x.patient_id = int(other_id)
                 break
             element_id += 1
@@ -64,7 +64,7 @@ class PatientList:
     def search(self, element_to_find):
         finded_elements = []
         for i in range(0, len(self.patient_list)):
-            str_patient = self.patient_list[i].str_for_search()
+            str_patient = self.patient_list[i]._str_for_search()
             if element_to_find in str_patient:
                 finded_elements.append(self.patient_list[i])
         return PatientList(finded_elements)
@@ -77,19 +77,40 @@ class PatientList:
     def save(self, path=None):
         dt = {}
         dt.update(vars(self))
-
+        print(type(dt))
         with open(path, "w") as file:
             json.dump(dt, file, cls=PatientEncoder)
+        file.close()
 
-    @Decorator.validateFileName()
-    def read_json_file(self, file_name, name_list):
+    @Decorator.validate_inp
+    def read_json_file(self):
+        file_name = input("Enter path: ")
+        file_name = Validate.validate_file_name(file_name)
+        name_list = input("Input name list: ")
         with open(file_name, 'r') as json_file:
             data = json.load(json_file)
             for i, element in enumerate(data[name_list]):
-                elem = Patient(**element)
-                self.add_patient(elem)
+                patient = Patient()
+                Patient._dict_to_obj(patient, element)
+                self.add_patient(patient)
         json_file.close()
+        return data, name_list
+
+    @Decorator.validate_inp
+    def save_upload_to_list(self):
+        patient = Patient()
+        data, name_list = self.read_json_file()
+        for i, element in enumerate(data[name_list]):
+            try:
+                patient_to_add = patient._to_patient(element)
+                print(patient_to_add.name)
+                print(type(patient_to_add))
+                self.add_patient(patient_to_add)
+            except ValueError as e:
+                print("Line" + str(i * (len(element) + 1) + 3) + ": " + str(e))
+                continue
+
+
 class PatientEncoder(json.JSONEncoder):
     def default(self, o):
         return o.__dict__
-
