@@ -3,8 +3,15 @@ from Decorator import Decorator
 
 class Patient(object):
     def __init__(self, **kwargs):
+        #self._department = None
+        #self._doctor_name = None
+        #self._duration_in_minutes = None
+        #self._time = None
+        #self._date = None
+        #self._name = None
+        #self._patient_id = None
         for (name_prop, value) in kwargs.items():
-            print(name_prop+" "+value)
+            print(name_prop + ": "+value)
             setattr(self, name_prop, kwargs.get(name_prop, value))
 
     @property
@@ -93,6 +100,7 @@ class Patient(object):
                + "\nName:" + str(self.name) \
                + "\nDate:" + str(self.date)\
                + "\nTime: " + str(self.time) \
+               + "\nDuration in minute: " + str(self.duration_in_minutes)\
                + "\nDoctor name: " + str(self.doctor_name)\
                + "\nDepartment: " + str(self.department)
 

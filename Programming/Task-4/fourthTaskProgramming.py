@@ -128,6 +128,7 @@ def sort_list(list_of_patient):
 
 
 def show_list(list_of_patient):
+    print(len(list_of_patient))
     for patient in list_of_patient:
         print(patient)
 
