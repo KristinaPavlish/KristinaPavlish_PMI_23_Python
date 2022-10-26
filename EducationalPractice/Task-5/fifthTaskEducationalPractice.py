@@ -1,6 +1,6 @@
 from LinkedList import LinkedList
 from Validator import Validator
-from Strategy import Strategy, generate_with_generator, generate_with_read_from_file
+from Strategy import Strategy, StrategyGenerateWithGenerator, StrategyGenerateWithReadFromFile
 
 
 def menu(linked_list, strategy):
@@ -16,10 +16,11 @@ def menu(linked_list, strategy):
         print("[7] - Exit")
         number = input("Enter option : ")
         if number == str(0):
-            strategy = Strategy(generate_sequence=generate_with_generator)
+            strategy = StrategyGenerateWithGenerator(Strategy)
         if number == str(1):
-            strategy = Strategy(generate_sequence=generate_with_read_from_file)
+            strategy = StrategyGenerateWithReadFromFile(Strategy)
         if number == str(2):
+            list_to_add = strategy.generate_list()
             list_to_add = strategy.get_list()
             index = input("Enter index to add elements: ")
             is_index_correct = Validator.is_natural(index)
