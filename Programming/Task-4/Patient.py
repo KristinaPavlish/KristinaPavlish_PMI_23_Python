@@ -2,17 +2,10 @@ from Decorator import Decorator
 
 
 class Patient(object):
+
     def __init__(self, **kwargs):
-        #self._department = None
-        #self._doctor_name = None
-        #self._duration_in_minutes = None
-        #self._time = None
-        #self._date = None
-        #self._name = None
-        #self._patient_id = None
-        for (name_prop, value) in kwargs.items():
-            print(name_prop + ": "+value)
-            setattr(self, name_prop, kwargs.get(name_prop, value))
+        for (prop, default) in kwargs.items():
+            setattr(self, prop, kwargs.get(prop, default))
 
     @property
     def patient_id(self):
@@ -30,7 +23,7 @@ class Patient(object):
     @name.setter
     @Decorator.decorator_patient_name
     def name(self, value):
-        self._name = value
+        self._name = value.upper()
 
     @property
     def date(self):
@@ -66,7 +59,7 @@ class Patient(object):
     @doctor_name.setter
     @Decorator.decorator_doctor_name
     def doctor_name(self, value):
-        self._doctor_name = value
+        self._doctor_name = value.upper()
 
     @property
     def department(self):
@@ -75,19 +68,11 @@ class Patient(object):
     @department.setter
     @Decorator.decorator_department
     def department(self, value):
-        self._department = value
+        self._department = value.upper()
 
-    def _to_dict(self):
-        return dict(self._patient_id + self._name + self._date + self._time + self._doctor_name + self._department)
-    #def _to_dict(self):
-    #    return dict((name, getattr(self, name)) for name in dir(self) if not name.startswith('__')
-    #                 and name != "input_patient" and name != "_str_for_search" and name != "_dict_to_obj" and name != "_to_dict" and name != "_Patient__to_dict")
-
-   # def ___to_dict(self):
-   #     return dict((name, getattr(self, name[1:len(name)])) for name in dir(self)
-   #                 if not name.startswith(
-   #         '__')  and name != "input_patient" and name != "to_patient" and name != "str_for_search" and
-   #                 name != "dict_to_obj" and name != "_to_dict" and name != "_Patient__to_obj" and name != "Patient___to_patient" and name != "Patient___to_dict")
+    def __get_dictionary(self):
+        return dict((name, getattr(self, name)) for name in dir(self) if not name.startswith('__')
+                    and not name.startswith('_') and name != "input_patient")
 
     @staticmethod
     def input_patient(*args):
@@ -95,15 +80,8 @@ class Patient(object):
         return d
 
     def __str__(self):
-        return "---Patient---\n"\
-               + "\nId:" + str(self.patient_id) \
-               + "\nName:" + str(self.name) \
-               + "\nDate:" + str(self.date)\
-               + "\nTime: " + str(self.time) \
-               + "\nDuration in minute: " + str(self.duration_in_minutes)\
-               + "\nDoctor name: " + str(self.doctor_name)\
-               + "\nDepartment: " + str(self.department)
-
+        return "Patient:\n" + '\n'.join("%s : %r" % (key2, str(val2)) for (key2, val2)
+                                        in self.__get_dictionary().items()) + "\n"
     def _str_for_search(self):
         return "\n" + '\n'.join("%s " % val2 for (key2, val2)
-                                in self._to_dict().items()) + "\n"
+                                in self.__get_dictionary().items()) + "\n"

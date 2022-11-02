@@ -8,14 +8,14 @@ def menu(patient_list):
     while 1 == 1:
         print("MENU:")
         print("************************************")
-        print("[1] - Add patient + ")
-        print("[2] - Save list + ")
-        print("[3] - Upload list+")
-        print("[4] - Show list+")
-        print("[5] - Delete patient from list+")
-        print("[6] - Edit patient in list+")
-        print("[7] - Delete patient from file+")
-        print("[8] - Edit patient in file+")
+        print("[1] - Add patient")
+        print("[2] - Save list")
+        print("[3] - Upload list")
+        print("[4] - Show list")
+        print("[5] - Delete patient from list")
+        print("[6] - Edit patient in list")
+        print("[7] - Delete patient from file")
+        print("[8] - Edit patient in file")
         print("[9] - Sort list")
         print("[10] - Search patient")
         print("[11] - Exit")
@@ -29,7 +29,8 @@ def menu(patient_list):
         if number == str(3):
             upload_list(patient_list)
         if number == str(4):
-            show_list(patient_list)
+            for patient in patient_list:
+                print(patient)
         if number == str(5):
             delete_patient_by_id(patient_list)
         if number == str(6):
@@ -51,8 +52,7 @@ def add_patient_to_list(list_of_patient):
     patient = Patient.input_patient("patient_id", "name", "date", "time", "duration_in_minutes", "doctor_name",
                                     "department")
 
-    list_of_patient.add_patient(Patient(**patient))
-    return list_of_patient
+    list_of_patient.append(Patient(**patient))
 
 
 @Decorator.validate_inp
@@ -63,10 +63,9 @@ def save_list(list_of_patient):
     list_of_patient.save(file_name)
 
 
-@Decorator.validate_inp
+@Decorator.validate_inp_from_file
 def upload_list(list_of_patient):
     PatientList.read_json_file(list_of_patient)
-    return list_of_patient
 
 
 @Decorator.validate_inp
@@ -74,7 +73,6 @@ def delete_patient_by_id(list_of_patient):
     id = input("Enter id to delete: ")
     id_to_del = is_id_correct(id)
     list_of_patient.remove_patient_from_list(id_to_del)
-    return list_of_patient
 
 
 def is_id_correct(id):
@@ -91,7 +89,6 @@ def edit_patient_by_id(list_of_patient):
     id = input("Enter id to delete: ")
     id_to_edit = is_id_correct(id)
     list_of_patient.edit_patient_in_list(id_to_edit)
-    return list_of_patient
 
 
 @Decorator.validate_inp
@@ -124,7 +121,6 @@ def edit_in_file(list_of_patient):
 def sort_list(list_of_patient):
     print("Fields to sort: <patient_id> <name> <date> <time> <duration_in_minutes> <doctor_name> <department>")
     list_of_patient.sort()
-    return list_of_patient
 
 
 def show_list(list_of_patient):

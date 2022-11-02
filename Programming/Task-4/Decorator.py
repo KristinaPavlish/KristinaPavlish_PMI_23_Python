@@ -1,5 +1,9 @@
 from datetime import datetime
-from Error import PatientIdIncorrect, NameIncorrect, DateIncorrect, TimeIncorrect, DurationInMinuteIncorrect, DepartmentIncorrect, DoctorNameIncorrect
+from Error import PatientIdIncorrect, NameIncorrect, DateIncorrect, TimeIncorrect, DurationInMinuteIncorrect, \
+    DepartmentIncorrect, DoctorNameIncorrect
+import re
+
+
 class Decorator:
     @staticmethod
     def decorator_time_in_minute(function):
@@ -12,6 +16,7 @@ class Decorator:
             except ValueError:
                 raise DurationInMinuteIncorrect
             item = int(item)
+            return function(patient, item)
 
         return is_natural
 
@@ -26,6 +31,7 @@ class Decorator:
             except ValueError:
                 raise PatientIdIncorrect
             item = int(item)
+            function(patient, item)
 
         return is_natural
 
@@ -39,6 +45,8 @@ class Decorator:
                     raise NameIncorrect
             except ValueError:
                 raise NameIncorrect
+            return function(patient, string)
+
         return is_only_letter
 
     @staticmethod
@@ -51,6 +59,8 @@ class Decorator:
                     raise DoctorNameIncorrect
             except ValueError:
                 raise DoctorNameIncorrect
+            return function(patient, string)
+
         return is_only_letter
 
     @staticmethod
@@ -63,15 +73,22 @@ class Decorator:
                     raise DepartmentIncorrect
             except ValueError:
                 raise DepartmentIncorrect
+            return function(patient, string)
+
         return is_only_letter
 
     @staticmethod
     def decorator_time(function):
         def correct_time(patient, time):
+            regex = "^([01]?[0-9]|2[0-3]):[0-5][0-9]$"
+            p = re.compile(regex)
+            m = re.search(p, time)
             try:
-                time = datetime.strptime(time, "%H:%M:%S")
+                if m is None or m == False:
+                    raise ValueError("Time: ", time, " does not match format %H:%M")
             except ValueError:
-                raise ValueError("Time: ", time, " does not match format %H:%M:%S")
+                raise ValueError("Time: ", time, " does not match format %H:%M")
+            return function(patient, time)
 
         return correct_time
 
@@ -82,6 +99,7 @@ class Decorator:
                 datetime.strptime(date, '%Y-%m-%d')
             except ValueError:
                 raise ValueError("Date: ", date, " does not match format %Y-%m-%d")
+            return function(patient, date)
 
         return correct_date
 
@@ -94,6 +112,8 @@ class Decorator:
                     raise ValueError("Must contain only letter.")
             except ValueError:
                 raise ValueError("Must contain only letter.")
+            return function(patient, string)
+
         return is_only_letter
 
     @staticmethod
@@ -104,6 +124,7 @@ class Decorator:
                     raise ValueError("Must contain integers.")
             except ValueError:
                 raise ValueError("Must contain integers.")
+            return function(patient, number)
 
         return is_integer
 
@@ -118,9 +139,9 @@ class Decorator:
             except ValueError:
                 raise ValueError("Must contain natural.")
             item = int(item)
+            return function(patient, item)
 
         return is_natural
-
 
     @staticmethod
     def validateFileName():
@@ -133,7 +154,6 @@ class Decorator:
             return validateFileNameWrapper
 
         return validateFileNameDecorator
-
 
     @staticmethod
     def validate_inp(function):
@@ -186,4 +206,35 @@ class Decorator:
                     print(e)
                     print("Try one more time!")
                     continue
+
+        return validate_inpWrapper
+
+    @staticmethod
+    def validate_inp_from_file(function):
+        def validate_inpWrapper(m):
+            try:
+                function(m)
+            except PatientIdIncorrect as e:
+                print(e)
+            except NameIncorrect as e:
+                print(e)
+            except DateIncorrect as e:
+                print(e)
+            except TimeIncorrect as e:
+                print(e)
+            except DurationInMinuteIncorrect as e:
+                print(e)
+            except DepartmentIncorrect as e:
+                print(e)
+            except DoctorNameIncorrect as e:
+                print(e)
+            except ValueError as e:
+                print(e)
+            except AttributeError as e:
+                print(e)
+            except NameError as e:
+                print(e)
+            except FileNotFoundError as e:
+                print(e)
+
         return validate_inpWrapper

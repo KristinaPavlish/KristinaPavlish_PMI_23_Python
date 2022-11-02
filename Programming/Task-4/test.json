@@ -1,1 +1,5 @@
-{"patient_list": []}
+[{"patient_id": "er", "name": "Wrr3434", "date": "2er022-12-12", "time": "23:er12", "duration_in_minutes": -77, "doctor_name": "WE", "department": "D"},
+  {"_patient_id": 12, "_name": "WEW", "_date": "202rec1-12-1xx2", "_time": "23:12", "_duration_in_minutes": 23, "_doctor_name": "WE", "_department": "D"},
+  {"_patient_id": 23, "_name": "W33E", "_date": "2022-12-12", "_time": "23:21", "_duration_in_minutes": 23, "_doctor_name": "ER", "_department": "DF"},
+  {"_patient_id": 23, "_name": "E", "_date": "2023-12-12", "_time": "23:23", "_duration_in_minutes": 23, "_doctor_name": "WE", "_department": "EEE"},
+  {"_patient_id": 2, "_name": "WE", "_date": "2024-12-12", "_time": "23:12", "_duration_in_minutes": 23, "_doctor_name": "EER", "_department": "ERER"}]
