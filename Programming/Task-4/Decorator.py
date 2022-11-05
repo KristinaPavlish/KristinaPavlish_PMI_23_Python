@@ -85,9 +85,9 @@ class Decorator:
             m = re.search(p, time)
             try:
                 if m is None or m == False:
-                    raise ValueError("Time: ", time, " does not match format %H:%M")
+                    raise TimeIncorrect("Time incorrect")
             except ValueError:
-                raise ValueError("Time: ", time, " does not match format %H:%M")
+                raise TimeIncorrect("Time incorrect")
             return function(patient, time)
 
         return correct_time
@@ -98,7 +98,7 @@ class Decorator:
             try:
                 datetime.strptime(date, '%Y-%m-%d')
             except ValueError:
-                raise ValueError("Date: ", date, " does not match format %Y-%m-%d")
+                raise DateIncorrect("Date incorrect")
             return function(patient, date)
 
         return correct_date
@@ -206,35 +206,5 @@ class Decorator:
                     print(e)
                     print("Try one more time!")
                     continue
-
-        return validate_inpWrapper
-
-    @staticmethod
-    def validate_inp_from_file(function):
-        def validate_inpWrapper(m):
-            try:
-                function(m)
-            except PatientIdIncorrect as e:
-                print(e)
-            except NameIncorrect as e:
-                print(e)
-            except DateIncorrect as e:
-                print(e)
-            except TimeIncorrect as e:
-                print(e)
-            except DurationInMinuteIncorrect as e:
-                print(e)
-            except DepartmentIncorrect as e:
-                print(e)
-            except DoctorNameIncorrect as e:
-                print(e)
-            except ValueError as e:
-                print(e)
-            except AttributeError as e:
-                print(e)
-            except NameError as e:
-                print(e)
-            except FileNotFoundError as e:
-                print(e)
 
         return validate_inpWrapper

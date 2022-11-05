@@ -63,9 +63,9 @@ def save_list(list_of_patient):
     list_of_patient.save(file_name)
 
 
-@Decorator.validate_inp_from_file
 def upload_list(list_of_patient):
-    PatientList.read_json_file(list_of_patient)
+    PatientList.read_file(list_of_patient, "patient_id", "name", "date", "time", "duration_in_minutes", "doctor_name",
+                          "department")
 
 
 @Decorator.validate_inp
@@ -76,7 +76,6 @@ def delete_patient_by_id(list_of_patient):
 
 
 def is_id_correct(id):
-    id = input("Enter id to delete: ")
     is_natural = Validate.is_natural_elem(id)
     while not is_natural:
         id = input("Enter id to delete: ")
@@ -86,7 +85,7 @@ def is_id_correct(id):
 
 @Decorator.validate_inp
 def edit_patient_by_id(list_of_patient):
-    id = input("Enter id to delete: ")
+    id = input("Enter id to edit: ")
     id_to_edit = is_id_correct(id)
     list_of_patient.edit_patient_in_list(id_to_edit)
 
@@ -95,26 +94,18 @@ def edit_patient_by_id(list_of_patient):
 def delete_patient_from_file(list_of_patient):
     id = input("Enter id to delete: ")
     id_to_del = is_id_correct(id)
-
-    path_to_upload = input("Enter path to upload: ")
-    path_to_upload = Validate.validate_file_name(path_to_upload)
-
-    name_list = input("Enter name of patient list: ")
-
     path_to_save = input("Enter path to save: ")
     path_to_save = Validate.validate_file_name(path_to_save)
-
-    list_of_patient.remove_patient_from_file(id_to_del, path_to_upload, path_to_save, name_list)
+    list_of_patient.remove_patient_from_file(id_to_del, path_to_save)
 
 
 @Decorator.validate_inp
 def edit_in_file(list_of_patient):
-    path = input("Enter path to upload: ")
-    path = Validate.validate_file_name(path)
-    name_list = input("Enter name of patient list: ")
-    id = input("Enter id to delete: ")
+    id = input("Enter id to edit: ")
     id_to_edit = is_id_correct(id)
-    list_of_patient.edit_patient_in_file(id_to_edit, path, name_list)
+    path_to_save = input("Enter path to save: ")
+    path_to_save = Validate.validate_file_name(path_to_save)
+    list_of_patient.edit_patient_in_file(id_to_edit, path_to_save)
 
 
 @Decorator.validate_inp
@@ -131,7 +122,7 @@ def show_list(list_of_patient):
 
 def search_in_list(list_of_patient):
     element_to_search = input("Enter element to search: ")
-    print(list_of_patient.search(element_to_search))
+    PatientList(list_of_patient.search(element_to_search))
 
 
 if __name__ == '__main__':

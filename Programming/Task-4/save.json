@@ -1,14 +1,14 @@
 [
-  {"date": "2021-12-12",
-    "department": "Gynecology",
-    "doctor_name": "Loe",
-    "duration_in_minutes": 20,
-    "name": "Vika",
-    "patient_id": 6,
-    "time": "14:30"
+  {"date": "2023ew-12-12",
+    "department": "56",
+    "doctor_name": "54",
+    "duration_in_minutes": "Hello",
+    "name": "35",
+    "patient_id": "Oops",
+    "time": "23:lialia3"
   },
   {"date": "2023-07-12",
-   "department": "Neurology",
+   "department": "WithError2323",
    "doctor_name": "Ned",
    "duration_in_minutes": 23,
    "name": "Liza",
