@@ -1,23 +1,17 @@
 from operator import attrgetter
 from Patient import Patient
 import json
-from PatientService import PatientService
-from Decorator import Decorator
+from Validate import Validate
+import copy
 from Memento import Memento
 
 
 class PatientList:
-    def __init__(self, patient_list=None):
-        self.patient_list = []
-        if patient_list is not None:
-            self.patient_list = patient_list
+    def __init__(self, *patient_list):
+        self.patient_list = list(patient_list[:])
 
     def __str__(self):
-        output = ""
-        for i in range(0, len(self.patient_list)):
-            output += str(self.patient_list[i])
-            output += "\n"
-        return output
+        return [str(el) for el in self.patient_list]
 
     def __len__(self):
         return len(self.patient_list)
@@ -28,47 +22,64 @@ class PatientList:
     def __setitem__(self, key, value):
         self.patient_list[key] = value
 
-    def add_patient(self, patient):
+    def append(self, patient):
         self.patient_list.append(patient)
 
     def remove_patient_from_list(self, other_id):
         element = None
         for x in self.patient_list:
-            if str(x.patient_id) == other_id:
+            if int(x.patient_id) == int(other_id):
                 element = x
                 break
         if element is not None:
             self.patient_list.remove(element)
 
-    @Decorator.validateFileName()
-    def remove_patient_from_file(self, other_id, path_to_upload, path_to_save, name_list):
-        PatientList.read_json_file(self, path_to_upload, name_list)
+    def remove_patient_from_file(self, other_id, path_to_save):
+        PatientList.read_file(self, "patient_id", "name", "date", "time", "duration_in_minutes",
+                              "doctor_name", "department")
         PatientList.remove_patient_from_list(self, other_id)
         PatientList.save(self, path_to_save)
 
     def edit_patient_in_list(self, other_id):
+        args = "_name", "_date", "_time", "_duration_in_minutes", "_doctor_name", "_department"
         element_id = 0
         for x in self.patient_list:
-            if str(x.patient_id) == other_id:
-                print("Patient to edit: ")
+            if int(x.patient_id) == int(other_id):
+                copy_x = copy.copy(x)
+                print("\nPatient to edit: ")
                 print(x)
-                x = PatientService.input_patient_from_keyboard(x)
+                print("\nProperty to edit: ")
+                for prop in args:
+                    print(prop)
+                property_to_edit = input("Enter property to edit: ")
+                setattr(x, property_to_edit, input("Enter " + str(property_to_edit) + ": "))
+                try:
+                    dictionary = x.dictionary_for_save()
+                    print(str(dictionary))
+                    patient = Patient(**dictionary)
+                    x = patient
+                except Exception as e:
+                    print(e)
+                    PatientList.remove_patient_from_list(self, other_id)
+                    continue
                 x.patient_id = int(other_id)
                 break
             element_id += 1
 
-    @Decorator.validateFileName()
-    def edit_patient_in_file(self, other_id, path, name_list):
-        PatientList.read_json_file(self, path, name_list)
+    def edit_patient_in_file(self, other_id, path_to_save):
+        PatientList.read_file(self, "patient_id", "name", "date", "time", "duration_in_minutes", "doctor_name",
+                              "department")
         PatientList.edit_patient_in_list(self, other_id)
+        PatientList.save(self, path_to_save)
 
     def search(self, element_to_find):
-        finded_elements = []
-        for i in range(0, len(self.patient_list)):
-            str_patient = self.patient_list[i].str_for_search()
-            if element_to_find in str_patient:
-                finded_elements.append(self.patient_list[i])
-        return PatientList(finded_elements)
+        finded_patient = PatientList()
+        for patient in self.patient_list:
+            str_patient = str(patient.str_for_search())
+            if str(element_to_find) in str_patient:
+                print(patient)
+                finded_patient.append(patient)
+        return finded_patient
 
     def sort(self):
         property = input("Enter property to sort: ")
@@ -78,22 +89,61 @@ class PatientList:
     def save(self, path=None):
         dt = {}
         dt.update(vars(self))
+        with open(path, "w", encoding='utf-8') as file:
+            json.dump([elem.dictionary_for_save() for elem in self.patient_list], file, cls=PatientEncoder)
+        file.close()
 
-        with open(path, "w") as file:
-            json.dump(dt, file, cls=PatientEncoder)
-
-    def read_json_file(self, file_name, name_list):
+    @staticmethod
+    def read_json_file():
+        name = input("Enter file name (to read): ")
+        file_name = Validate.validate_file_name(name)
         with open(file_name, 'r') as json_file:
             data = json.load(json_file)
-            for i, element in enumerate(data[name_list]):
-                elem = Patient(**element)
-                self.add_patient(elem)
+            for i, product in enumerate(data):
+                yield product
         json_file.close()
 
-    def save_memento(self, message):
+    def read_file(self, *args):
+        list_uploaded_patient = PatientList.read_json_file()
+        lst = []
+        patient_for_check = Patient()
+        counter = 0
+        for elem in list_uploaded_patient:
+            patient = elem
+            counter += 1
+            for prop in args:
+                try:
+                    setattr(patient_for_check, prop, elem[prop])
+                except Exception as err:
+                    lst.append("Patient " + str(counter))
+                    lst.append(err)
+                    patient = None
+                    print(str(prop) + " incorrect")
+                    break
+            if patient is not None:
+                self.patient_list.append(Patient(**elem))
+        for error in lst:
+            print(error)
+
+    def str_for_memento(self):
+        str_list = []
+        for elem in self.patient_list:
+            str_list.append(elem.dictionary_for_save())
+        return str_list
+
+
+    def save_memento(self, message, memento):
         copy_list = self.patient_list.copy()
+
+        str_patient_list = []
+        for elem in self.patient_list:
+            str_patient_list.append(elem)
+        for elem in copy_list:
+            print(elem)
+
+        memento.set_message(message)
         print(message)
-        return copy_list
+        return str_patient_list
 
     def restore_memento(self, memento: Memento):
         self.patient_list = memento.get_list()

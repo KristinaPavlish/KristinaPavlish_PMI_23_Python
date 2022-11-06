@@ -1,189 +1,147 @@
+from datetime import datetime
+from Error import PatientIdIncorrect, NameIncorrect, DateIncorrect, TimeIncorrect, DurationInMinuteIncorrect, \
+    DepartmentIncorrect, DoctorNameIncorrect
+import re
+
+
 class Decorator:
-
-    def decorator_integer(function):
-        def is_integer(number):
-            is_item_integer = False
-            try:
-                if int(number) and int(number) >= 0:
-                    is_item_integer = True
-            except ValueError:
-                print('Item must be integer! ')
-                is_item_integer = False
-            while not is_item_integer:
-                number = input("Enter integer: ")
-                continue
-
-        return is_integer
-
     @staticmethod
-    @decorator_integer
-    def enter_natural(number):
-        return number
-
-    def decorator_natural(function):
-        def is_natural(item):
-            is_item_natural = False
-            while not is_item_natural:
-                try:
-                    if int(item) <= 0:
-                        print("Item must be natural! ")
-                        item = input("Enter natural: ")
-                        is_item_natural = False
-                    else:
-                        is_item_natural = True
-                except ValueError:
-                    print('Item must be natural! ')
-                    item = input("Enter natural: ")
+    def decorator_time_in_minute(function):
+        def is_natural(patient, item):
+            try:
+                if not int(item):
+                    raise DurationInMinuteIncorrect
+                if int(item) <= 0:
+                    raise DurationInMinuteIncorrect
+            except ValueError:
+                raise DurationInMinuteIncorrect
             item = int(item)
-            return item
+            return function(patient, item)
 
         return is_natural
 
     @staticmethod
-    @decorator_natural
-    def enter_natural(number):
-        return number
+    def decorator_id(function):
+        def is_natural(patient, item):
+            try:
+                if not int(item):
+                    raise PatientIdIncorrect
+                if int(item) <= 0:
+                    raise PatientIdIncorrect
+            except ValueError:
+                raise PatientIdIncorrect
+            item = int(item)
+            function(patient, item)
 
-    def decorator_word(function):
-        def is_only_letter(string):
-            is_letter = False
-            while not is_letter:
-                try:
-                    if string.isalpha():
-                        is_letter = True
-                    else:
-                        print("Name must contain only letter ")
-                        string = input("Enter again: ")
-                        is_letter = False
-                except ValueError:
-                    print('Word must contain only letter! ')
-                    string = input("Enter again: ")
+        return is_natural
+
+    @staticmethod
+    def decorator_patient_name(function):
+        def is_only_letter(patient, string):
             string = string.title()
-            return string
+            try:
+                string = string.title()
+                if not string.isalpha():
+                    raise NameIncorrect
+            except ValueError:
+                raise NameIncorrect
+            return function(patient, string)
 
         return is_only_letter
 
     @staticmethod
-    @decorator_word
-    def enter_words(string):
-        return string
+    def decorator_doctor_name(function):
+        def is_only_letter(patient, string):
+            string = string.title()
+            try:
+                string = string.title()
+                if not string.isalpha():
+                    raise DoctorNameIncorrect
+            except ValueError:
+                raise DoctorNameIncorrect
+            return function(patient, string)
 
+        return is_only_letter
+
+    @staticmethod
+    def decorator_department(function):
+        def is_only_letter(patient, string):
+            string = string.title()
+            try:
+                string = string.title()
+                if not string.isalpha():
+                    raise DepartmentIncorrect
+            except ValueError:
+                raise DepartmentIncorrect
+            return function(patient, string)
+
+        return is_only_letter
+
+    @staticmethod
     def decorator_time(function):
-        def correct_time(time):
-            is_time_correct = False
-            while not is_time_correct:
-                if time == "00:00":
-                    is_time_correct = True
-                is_24_hour = False
-                split_time = time.split(':')
-                if len(split_time) != 2 or len(split_time[0]) != 2 or len(split_time[0]) != 2:
-                    print('Time must be XX:XX ')
-                    time = input("Enter correct time: ")
-                    is_time_correct = False
-                    continue
-                try:
-                    for i in range(0, len(split_time)):
-                        if i == 0 and int(split_time[i]) == 24:
-                            is_24_hour = True
-                        if is_24_hour:
-                            if i == 1 and split_time[i] != "00":
-                                print("Time incorrect")
-                                time = input("Enter correct time: ")
-                                is_time_correct = False
-                                continue
-                        if i == 0 and int(split_time[i]) > 23:
-                            print("Time cannot be biggest than 23:59")
-                            time = input("Enter correct time: ")
-                            is_time_correct = False
-                            continue
-                        if i == 1 and int(split_time[i]) > 59:
-                            print("Minute cannot be biggest than 59")
-                            time = input("Enter correct time: ")
-                            is_time_correct = False
-                            continue
-                        if int(split_time[i]) < 0:
-                            print("Time must be natural! ")
-                            time = input("Enter correct time: ")
-                            is_time_correct = False
-                            continue
-                        if int(split_time[i]) and int(split_time[i]) >= 0:
-                            is_time_correct = True
-                except ValueError:
-                    print('Time must be integer! ')
-                    time = input("Enter correct time: ")
-                    continue
-            return time
+        def correct_time(patient, time):
+            regex = "^([01]?[0-9]|2[0-3]):[0-5][0-9]$"
+            p = re.compile(regex)
+            m = re.search(p, time)
+            try:
+                if m is None or m == False:
+                    raise TimeIncorrect("Time incorrect")
+            except ValueError:
+                raise TimeIncorrect("Time incorrect")
+            return function(patient, time)
 
         return correct_time
 
     @staticmethod
-    @decorator_time
-    def enter_time(time):
-        return time
-
     def decorator_date(function):
-        def correct_date(date):
-            date = str(date)
-            is_date_correct = False
-            while not is_date_correct:
-                split_date = date.split('/')
-                if len(split_date) < 3:
-                    print('Date must be XX/XX/XX ')
-                    date = input("Enter correct date: ")
-                    is_date_correct = False
-                    continue
-                try:
-                    for i in range(0, len(split_date)):
-                        if len(split_date[i]) != 2:
-                            if i == 0:
-                                print('Day must contain 2 digit')
-                                date = input("Enter correct time: ")
-                                is_date_correct = False
-                                continue
-                            if i == 1:
-                                print('Month must contain 2 digit')
-                                date = input("Enter correct date: ")
-                                is_date_correct = False
-                                continue
-                            if i == 2:
-                                print('Year must contain 2 digit')
-                                date = input("Enter correct date: ")
-                                is_date_correct = False
-                                continue
-                        if i == 0 and int(split_date[i]) > 31:
-                            print('Day must be lower than 31')
-                            is_date_correct = False
-                            date = input("Enter correct date: ")
-                            continue
-                        if i == 1 and int(split_date[i]) > 12:
-                            print('Month must be lower than 12')
-                            date = input("Enter correct date: ")
-                            is_date_correct = False
-                            continue
-                        if i == 2 and int(split_date[i]) < 22:
-                            print('Year must be biggest than 22')
-                            date = input("Enter correct date: ")
-                            is_date_correct = False
-                            continue
-
-                        if int(split_date[i]) <= 0:
-                            print("Time must be natural! ")
-                            date = input("Enter correct date: ")
-                            is_date_correct = False
-                            continue
-                        if int(split_date[i]) and int(split_date[i]) >= 0:
-                            is_date_correct = True
-                except ValueError:
-                    print('Time must be integer! ')
-                    date = input("Enter correct date: ")
-            return str(date)
+        def correct_date(patient, date):
+            try:
+                datetime.strptime(date, '%Y-%m-%d')
+            except ValueError:
+                raise DateIncorrect("Date incorrect")
+            return function(patient, date)
 
         return correct_date
 
     @staticmethod
-    @decorator_date
-    def enter_date(date):
-        return date
+    def decorator_word(function):
+        def is_only_letter(patient, string):
+            string = string.title()
+            try:
+                if not string.isalpha():
+                    raise ValueError("Must contain only letter.")
+            except ValueError:
+                raise ValueError("Must contain only letter.")
+            return function(patient, string)
+
+        return is_only_letter
+
+    @staticmethod
+    def decorator_integer(function):
+        def is_integer(patient, number):
+            try:
+                if int(number) and int(number) >= 0:
+                    raise ValueError("Must contain integers.")
+            except ValueError:
+                raise ValueError("Must contain integers.")
+            return function(patient, number)
+
+        return is_integer
+
+    @staticmethod
+    def decorator_natural(function):
+        def is_natural(patient, item):
+            try:
+                if not int(item):
+                    raise ValueError("Must contain natural.")
+                if int(item) <= 0:
+                    raise ValueError("Must contain natural.")
+            except ValueError:
+                raise ValueError("Must contain natural.")
+            item = int(item)
+            return function(patient, item)
+
+        return is_natural
 
     @staticmethod
     def validateFileName():
@@ -197,3 +155,56 @@ class Decorator:
 
         return validateFileNameDecorator
 
+    @staticmethod
+    def validate_inp(function):
+        def validate_inpWrapper(m):
+            while True:
+                try:
+                    function(m)
+                    break
+                except PatientIdIncorrect as e:
+                    print(e)
+                    print("Try one more time!")
+                    continue
+                except NameIncorrect as e:
+                    print(e)
+                    print("Try one more time!")
+                    continue
+                except DateIncorrect as e:
+                    print(e)
+                    print("Try one more time!")
+                    continue
+                except TimeIncorrect as e:
+                    print(e)
+                    print("Try one more time!")
+                    continue
+                except DurationInMinuteIncorrect as e:
+                    print(e)
+                    print("Try one more time!")
+                    continue
+                except DepartmentIncorrect as e:
+                    print(e)
+                    print("Try one more time!")
+                    continue
+                except DoctorNameIncorrect as e:
+                    print(e)
+                    print("Try one more time!")
+                    continue
+                except ValueError as e:
+                    print(e)
+                    print("Try one more time!")
+                    continue
+                except AttributeError as e:
+                    print(e)
+                    print("Try one more time!")
+                    continue
+                except NameError as e:
+                    print(e)
+                    print("Try one more time!")
+                    continue
+                except FileNotFoundError as e:
+                    print(e)
+                    print("Try one more time!")
+                    continue
+
+        return validate_inpWrapper

@@ -1,66 +1,91 @@
 from Decorator import Decorator
 
 
-class Patient:
+class Patient(object):
+    def __init__(self, **kwargs):
+        for (prop, default) in kwargs.items():
+            setattr(self, prop, kwargs.get(prop, default))
 
-    def __init__(self, patient_id=None, name=None, date=None, time=None, duration_in_minutes=None, doctor_name=None,
-                 department=None):
-        self.patient_id = patient_id
-        self.name = name
-        self.date = date
-        self.time = time
-        self.duration_in_minutes = duration_in_minutes
-        self.doctor_name = doctor_name
-        self.department = department
+    @property
+    def patient_id(self):
+        return self._patient_id
 
-    def __str__(self):
-        return "Patient Id: {0}, Name: {1}, Date: {2}, Time: {3}, Duration: {4} (in minutes), Doctor Name: {5}, Department: {6}" \
-            .format(
-            self.patient_id,
-            self.name,
-            self.date,
-            self.time,
-            self.duration_in_minutes,
-            self.doctor_name,
-            self.department
-        )
-
-    def str_for_search(self):
-        return "{0} {1} {2} {3} {4} {5} {6}" \
-            .format(
-            self.patient_id,
-            self.name,
-            self.date,
-            self.time,
-            self.duration_in_minutes,
-            self.doctor_name,
-            self.department
-        )
-
-    @Decorator.decorator_natural
+    @patient_id.setter
+    @Decorator.decorator_id
     def patient_id(self, value):
-        self.patient_id = value
+        self._patient_id = value
 
-    @Decorator.decorator_word
+    @property
+    def name(self):
+        return self._name.capitalize()
+
+    @name.setter
+    @Decorator.decorator_patient_name
     def name(self, value):
-        self.name = value
+        self._name = value.capitalize()
 
+    @property
+    def date(self):
+        return self._date
+
+    @date.setter
     @Decorator.decorator_date
     def date(self, value):
-        self.date = value
+        self._date = value
 
+    @property
+    def time(self):
+        return self._time
+
+    @time.setter
     @Decorator.decorator_time
     def time(self, value):
-        self.time = value
+        self._time = value
 
-    @Decorator.decorator_natural
+    @property
+    def duration_in_minutes(self):
+        return self._duration_in_minutes
+
+    @duration_in_minutes.setter
+    @Decorator.decorator_time_in_minute
     def duration_in_minutes(self, value):
-        self.duration_in_minutes = value
+        self._duration_in_minutes = value
 
-    @Decorator.decorator_word
+    @property
+    def doctor_name(self):
+        return self._doctor_name.capitalize()
+
+    @doctor_name.setter
+    @Decorator.decorator_doctor_name
     def doctor_name(self, value):
-        self.doctor_name = value
+        self._doctor_name = value.capitalize()
 
-    @Decorator.decorator_word
+    @property
+    def department(self):
+        return self._department.capitalize()
+
+    @department.setter
+    @Decorator.decorator_department
     def department(self, value):
-        self.department = value
+        self._department = value.capitalize()
+
+    def __get_dictionary(self):
+        return dict((prop, getattr(self, prop)) for prop in dir(self) if not prop.startswith('__')
+                    and not prop.startswith('_') and prop != "input_patient" and prop != "dictionary_for_save" and prop != "str_for_search")
+
+    def dictionary_for_save(self):
+        return dict((prop[0:], getattr(self, prop)) for prop in dir(self) if not prop.startswith('__')
+                    and not prop.startswith('_') and prop != "input_patient" and prop != "dictionary_for_save" and prop != "str_for_search")
+
+    @staticmethod
+    def input_patient(*args):
+        d = dict((prop, input(prop + " : ")) for prop in args)
+        return d
+
+    def __str__(self):
+        return "Patient:\n" + '\n'.join("%s : %r" % (key2, str(val2)) for (key2, val2)
+                                        in self.__get_dictionary().items()) + "\n"
+
+    def str_for_search(self):
+        search_str = "\n" + '\n'.join("%s " % val2 for (key2, val2) in self.__get_dictionary().items()) + "\n"
+        return str(search_str)
