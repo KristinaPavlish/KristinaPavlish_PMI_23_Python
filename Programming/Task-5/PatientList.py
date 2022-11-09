@@ -25,6 +25,11 @@ class PatientList:
     def append(self, patient):
         self.patient_list.append(patient)
 
+    def clear_list(self):
+        patient_list = []
+        self.patient_list = patient_list
+        return self.patient_list
+
     def remove_patient_from_list(self, other_id):
         element = None
         for x in self.patient_list:
@@ -35,6 +40,9 @@ class PatientList:
             self.patient_list.remove(element)
 
     def remove_patient_from_file(self, other_id, path_to_save):
+        self.clear_list()
+        for elem in self.patient_list:
+            print(elem)
         PatientList.read_file(self, "patient_id", "name", "date", "time", "duration_in_minutes",
                               "doctor_name", "department")
         PatientList.remove_patient_from_list(self, other_id)
@@ -67,10 +75,12 @@ class PatientList:
             element_id += 1
 
     def edit_patient_in_file(self, other_id, path_to_save):
+        self.clear_list()
+        for elem in self.patient_list:
+            print(elem)
         PatientList.read_file(self, "patient_id", "name", "date", "time", "duration_in_minutes", "doctor_name",
                               "department")
         PatientList.edit_patient_in_list(self, other_id)
-        clear_file = open(path_to_save)
         PatientList.save(self, path_to_save)
 
     def search(self, element_to_find):
