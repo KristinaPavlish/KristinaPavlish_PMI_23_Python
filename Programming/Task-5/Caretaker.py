@@ -42,7 +42,3 @@ class Caretaker:
         self.mementos_list.append(self.patient_list.save_memento(message, memento))
         self.current_index += 1
 
-        print(self.current_index)
-        for elem in self.mementos_list:
-            print(elem)
-

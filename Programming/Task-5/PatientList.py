@@ -70,6 +70,7 @@ class PatientList:
         PatientList.read_file(self, "patient_id", "name", "date", "time", "duration_in_minutes", "doctor_name",
                               "department")
         PatientList.edit_patient_in_list(self, other_id)
+        clear_file = open(path_to_save)
         PatientList.save(self, path_to_save)
 
     def search(self, element_to_find):
@@ -115,11 +116,10 @@ class PatientList:
                 try:
                     setattr(patient_for_check, prop, elem[prop])
                 except Exception as err:
-                    lst.append("Patient " + str(counter))
-                    lst.append(err)
+                    lst.append("Patient " + str(counter) + ": " + str(err))
                     patient = None
                     print(str(prop) + " incorrect")
-                    break
+                    continue
             if patient is not None:
                 self.patient_list.append(Patient(**elem))
         for error in lst:
