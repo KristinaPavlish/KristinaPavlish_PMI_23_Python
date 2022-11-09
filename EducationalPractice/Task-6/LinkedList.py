@@ -165,13 +165,13 @@ class LinkedList:
                 index = input("Enter correct index to add: ")
                 is_index_correct = (Validator.is_natural(index)) and (int(index) < size + 1)
             for j in range(0, len(self)):
-                if j < index - 1:
+                if j < int(index) - 1:
                     new_list.insert(self[j])
-                if j == index - 1:
+                if j == int(index) - 1:
                     new_list.insert(self[j])
                     for i in range(0, len(sequence)):
                         new_list.insert(sequence[i])
-                if j > index - 1:
+                if j > int(index) - 1:
                     new_list.insert(self[j])
         else:
             print("List was empty added in start: ")
