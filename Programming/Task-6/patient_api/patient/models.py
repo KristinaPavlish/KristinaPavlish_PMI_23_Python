@@ -1,29 +1,24 @@
+from django.core.validators import RegexValidator
 from django.db import models
 
 
-# Create your models here.
-
 class Patients(models.Model):
-    app_label  = 'Patients'
-    id = models.IntegerField()
-    patient_name = models.CharField(max_length=200)
+    app_label = 'patient_api'
+    patient_id = models.IntegerField()
+    name = models.CharField(max_length=200, verbose_name='name', validators=[
+        RegexValidator(regex='^[a-zA-Z ]+$', message='Incorrect name', code='invalid_name')])
     date = models.DateTimeField()
     time = models.TimeField()
     duration = models.IntegerField()
-    doctor_name = models.CharField(max_length=200)
-    department = models.CharField(max_length=200)
+    doctor_name = models.CharField(max_length=200, verbose_name='doctor_name', validators=[
+        RegexValidator(regex='^[a-zA-Z ]+$', message='Incorrect doctor name', code='invalid_doctor_name')])
+    department = models.CharField(max_length=200, verbose_name='department', validators=[
+        RegexValidator(regex='^[a-zA-Z ]+$', message='Incorrect department', code='invalid_department')])
 
     def __str__(self):
-        return "\nid: " + self.id + "\nname: " + self.name+ "\ndate: " + self.date+ "\ntime: " + self.time\
-               + "\nduration: " + self.duration + "\ndoctor_name: " + self.doctor_name + "\ndepartment: " + self.department
+        return "\nid: " + str(self.patient_id) + "\nname: " + self.name + "\ndate: " + str(
+            self.date) + "\ntime: " + str(self.time) + "\nduration: " + str(
+            self.duration) + "\ndoctor_name: " + self.doctor_name + "\ndepartment: " + self.department
 
-
-class Question(models.Model):
-    question_text = models.CharField(max_length=200)
-    pub_date = models.DateTimeField('date published')
-
-
-class Choice(models.Model):
-    question = models.ForeignKey(Question, on_delete=model.CASCADE)
-    choice_text = models.CharField(max_length=200)
-    votes = models.IntegerField(default=0)
+    class Meta:
+        app_label = 'patient_api'
