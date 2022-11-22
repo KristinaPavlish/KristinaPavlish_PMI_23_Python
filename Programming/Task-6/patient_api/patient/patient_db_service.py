@@ -12,11 +12,85 @@ mydb = mysql.connector.connect(
 
 
 class PatientService:
-    # GET /patients
+
+    # GET /patients?elem_to_search=&limit=&offset=
     @staticmethod
-    def get_patients():
+    def search_without_sort(lim, offs, elem_to_search):
         cursor = mydb.cursor(dictionary=True)
-        cursor.execute("SELECT * FROM patient_db.patient")
+        cursor.execute("SELECT * FROM patient_db.patient WHERE "
+                       "patient_id LIKE '%" + str(elem_to_search) + "%'" +
+                       " OR name LIKE '%" + str(elem_to_search) + "%'" +
+                       " OR date LIKE '%" + str(elem_to_search) + "%'" +
+                       " OR time LIKE '%" + str(elem_to_search) + "%'" +
+                       " OR duration LIKE '%" + str(elem_to_search) + "%'" +
+                       " OR doctor_name LIKE '%" + str(elem_to_search) + "%'" +
+                       " OR department LIKE '%" + str(elem_to_search) + "%'" +
+                       " LIMIT " + str(offs) + ", " + str(lim))
+        return json.dumps(cursor.fetchall(), default=str)
+
+    # GET /patients?elem_to_search=&sort=&limit=&offset=
+    @staticmethod
+    def search_sort(lim, offs, sort, elem_to_search):
+        cursor = mydb.cursor(dictionary=True)
+        cursor.execute("SELECT * FROM patient_db.patient WHERE "
+                       "patient_id LIKE '%" + str(elem_to_search) + "%'" +
+                       " OR name LIKE '%" + str(elem_to_search) + "%'" +
+                       " OR date LIKE '%" + str(elem_to_search) + "%'" +
+                       " OR time LIKE '%" + str(elem_to_search) + "%'" +
+                       " OR duration LIKE '%" + str(elem_to_search) + "%'" +
+                       " OR doctor_name LIKE '%" + str(elem_to_search) + "%'" +
+                       " OR department LIKE '%" + str(elem_to_search) + "%'" +
+                       "ORDER BY " + str(sort) + " ASC" +
+                       " LIMIT " + str(offs) + ", " + str(lim))
+        return json.dumps(cursor.fetchall(), default=str)
+
+    # GET /patients?elem_to_search=&sort_by_desc=&limit=&offset=
+    @staticmethod
+    def search_sort_desc(lim, offs, sort_by_desc, elem_to_search):
+        cursor = mydb.cursor(dictionary=True)
+        cursor.execute("SELECT * FROM patient_db.patient WHERE "
+                       "patient_id LIKE '%" + str(elem_to_search) + "%'" +
+                       " OR name LIKE '%" + str(elem_to_search) + "%'" +
+                       " OR date LIKE '%" + str(elem_to_search) + "%'" +
+                       " OR time LIKE '%" + str(elem_to_search) + "%'" +
+                       " OR duration LIKE '%" + str(elem_to_search) + "%'" +
+                       " OR doctor_name LIKE '%" + str(elem_to_search) + "%'" +
+                       " OR department LIKE '%" + str(elem_to_search) + "%'" +
+                       "ORDER BY " + str(sort_by_desc) + " DESC" +
+                       " LIMIT " + str(offs) + ", " + str(lim))
+        return json.dumps(cursor.fetchall(), default=str)
+
+    # GET /patients?sort=&sort_by_desc=&limit=&offset=
+    @staticmethod
+    def get_patients(lim, offs, sort, sort_by_desc):
+        cursor = mydb.cursor(dictionary=True)
+        cursor.execute("SELECT * FROM patient_db.patient ORDER BY " + str(sort) + " ASC, " + str(
+            sort_by_desc) + " DESC" + " LIMIT " + str(offs) + ", " + str(lim))
+        return json.dumps(cursor.fetchall(), default=str)
+
+    # GET /patients?sort=&limit=&offset=
+    @staticmethod
+    def get_patients_order_by(lim, offs, sort):
+        cursor = mydb.cursor(dictionary=True)
+        cursor.execute(
+            "SELECT * FROM patient_db.patient ORDER BY " + str(sort) + " ASC" + " LIMIT " + str(offs) + ", " + str(lim))
+        return json.dumps(cursor.fetchall(), default=str)
+
+    # GET /patients?sort_by_decs=&limit=&offset=
+    @staticmethod
+    def get_patients_order_by_desc(lim, offs, sort):
+        cursor = mydb.cursor(dictionary=True)
+        cursor.execute(
+            "SELECT * FROM patient_db.patient ORDER BY " + str(sort) + " DESC" + " LIMIT " + str(offs) + ", " + str(
+                lim))
+        return json.dumps(cursor.fetchall(), default=str)
+
+    # GET /patients?limit=&offset=
+    @staticmethod
+    def get_patients_without_any_order(lim, offs):
+        cursor = mydb.cursor(dictionary=True)
+        cursor.execute(
+            "SELECT * FROM patient_db.patient " + "LIMIT " + str(offs) + ", " + str(lim))
         return json.dumps(cursor.fetchall(), default=str)
 
     # GET/patients/{patient_id}
@@ -70,6 +144,12 @@ class PatientService:
         return json.dumps(cursor.fetchall(), default=str)
 
     @staticmethod
+    def count_patient():
+        cursor = mydb.cursor(dictionary=True)
+        cursor.execute("SELECT COUNT(patient_id) FROM patient_db.patient")
+        return json.dumps(cursor.fetchall(), default=str)
+
+    @staticmethod
     def validate(data_str):
         data = json.loads(data_str)
         dict_errors = {}
@@ -86,6 +166,3 @@ class PatientService:
                 raise ValueError(str(dict_errors))
             print(str(dict_errors))
         return data
-
-
-
