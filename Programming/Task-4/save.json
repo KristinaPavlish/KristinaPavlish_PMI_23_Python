@@ -1,0 +1,43 @@
+[
+  {"date": "2023ew-12-12",
+    "department": "56",
+    "doctor_name": "54",
+    "duration_in_minutes": "Hello",
+    "name": "35",
+    "patient_id": "Oops",
+    "time": "23:lialia3"
+  },
+  {"date": "2023-07-12",
+   "department": "WithError2323",
+   "doctor_name": "Ned",
+   "duration_in_minutes": 23,
+   "name": "Liza",
+   "patient_id": 1,
+   "time": "23:23"
+},
+{
+  "date": "2021-11-01",
+  "department": "Oncology",
+  "doctor_name": "Bill",
+  "duration_in_minutes": 567,
+  "name": "Kate",
+  "patient_id": 2,
+  "time": "12:05"},
+{
+  "date": "2023-05-12",
+  "department": "Orthopedics",
+  "doctor_name": "Jon",
+  "duration_in_minutes": 35,
+  "name": "Molly",
+  "patient_id": 3,
+  "time": "07:13"},
+{
+  "date": "2020-11-02",
+  "department": "Cardiology",
+  "doctor_name": "Tomas",
+  "duration_in_minutes": 15,
+  "name": "Mary",
+  "patient_id": 4,
+  "time": "01:27"
+}
+]

@@ -1,0 +1,43 @@
+[
+  {"date": "2021-12-12",
+    "department": "Gynecology",
+    "doctor_name": "Loe",
+    "duration_in_minutes": 20,
+    "name": "Vika",
+    "patient_id": 6,
+    "time": "14:30"
+  },
+  {"date": "2023-07-12",
+   "department": "Neurology",
+   "doctor_name": "Ned",
+   "duration_in_minutes": 23,
+   "name": "Liza",
+   "patient_id": 1,
+   "time": "23:23"
+},
+{
+  "date": "2021-11-01",
+  "department": "Oncology",
+  "doctor_name": "Bill",
+  "duration_in_minutes": 567,
+  "name": "Kate",
+  "patient_id": 2,
+  "time": "12:05"},
+{
+  "date": "2023-05-12",
+  "department": "Orthopedics",
+  "doctor_name": "Jon",
+  "duration_in_minutes": 35,
+  "name": "Molly",
+  "patient_id": 3,
+  "time": "07:13"},
+{
+  "date": "2020-11-02",
+  "department": "Cardiology",
+  "doctor_name": "Tomas",
+  "duration_in_minutes": 15,
+  "name": "Mary",
+  "patient_id": 4,
+  "time": "01:27"
+}
+]
